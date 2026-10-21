@@ -1,11 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Document</title>
-</head>
-<body>
-     
-</body>
+<html lang="pt-BR">
+     <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>Câmera</title>
+          <link rel="stylesheet" href="style.css">
+     </head>
+     <body>
+          <main>
+               <h1 class="h1">Tirar uma foto</h1>
+
+               <div class="stage">
+                    <video id="video" autoplay playsinline muted></video>
+                    <img id="photo" class="hidden" alt="Foto capturada">
+               </div>
+
+               <canvas id="canvas" class="hidden"></canvas>
+
+               <p id="msg" role="status">Clique em “Abrir câmera” e permita o acesso quando o navegador pedir.</p>
+
+               <div class="row">
+                    <button id="start" class="primary">Abrir câmera</button>
+                    <button id="snap" disabled>Tirar foto</button>
+                    <button id="flip" disabled>Trocar câmera</button>
+                    <button id="retake" class="hidden">Tirar outra</button>
+                    <a id="download" class="btn hidden" download="foto.png">Baixar foto</a>
+               </div>
+          </main>
+
+          <script>
+               const video = document.getElementById('video');
+               const photo = document.getElementById('photo');
+               const canvas = document.getElementById('canvas');
+               const msg = document.getElementById('msg');
+               const startBtn = document.getElementById('start');
+               const snapBtn = document.getElementById('snap');
+               const flipBtn = document.getElementById('flip');
+               const retakeBtn = document.getElementById('retake');
+               const downloadLink = document.getElementById('download');
+
+               let stream = null;
+               let facingMode = 'user'; // 'user' = frontal, 'environment' = traseira
+
+               async function startCamera() {
+                    stopCamera();
+
+                    try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                         facingMode,
+                         width: { ideal: 1280 },
+                         height: { ideal: 960 }
+                    },
+                    audio: false
+                    });
+
+                    video.srcObject = stream;
+                    video.classList.remove('hidden');
+                    photo.classList.add('hidden');
+                    snapBtn.disabled = false;
+                    flipBtn.disabled = false;
+                    startBtn.classList.add('hidden');
+                    retakeBtn.classList.add('hidden');
+                    downloadLink.classList.add('hidden');
+                    msg.textContent = 'Câmera ativa. Clique em “Tirar foto”.';
+                    } catch (err) {
+                    msg.textContent = err.name === 'NotAllowedError'
+                    ? 'Acesso negado. Permita o uso da câmera nas configurações do navegador.'
+                    : 'Não foi possível abrir a câmera: ' + err.message;
+                    }
+               }
+
+               function stopCamera() {
+                    if (stream) {
+                    stream.getTracks().forEach(t => t.stop());
+                    stream = null;
+                    }
+               }
+
+               function takePhoto() {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    const dataUrl = canvas.toDataURL('image/png');
+                    photo.src = dataUrl;
+                    downloadLink.href = dataUrl;
+
+                    video.classList.add('hidden');
+                    photo.classList.remove('hidden');
+                    downloadLink.classList.remove('hidden');
+                    retakeBtn.classList.remove('hidden');
+                    snapBtn.disabled = true;
+                    flipBtn.disabled = true;
+                    stopCamera();
+                    msg.textContent = 'Foto capturada!';
+               }
+
+               startBtn.addEventListener('click', startCamera);
+               retakeBtn.addEventListener('click', startCamera);
+               snapBtn.addEventListener('click', takePhoto);
+
+               flipBtn.addEventListener('click', () => {
+                    facingMode = facingMode === 'user' ? 'environment' : 'user';
+                    startCamera();
+               });
+          </script>
+     </body>
 </html>
