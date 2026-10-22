@@ -20,12 +20,23 @@ async def root():
     return FileResponse(BASE_DIR / "view" / "home.html")
 
 
-@app.post("/model")
-async def model(file: UploadFile = File(...)):
-  start_model()
-  try:
-    resultado = classify_image(file.file)
-    return {'success': True, 'prediction': resultado}
 
-  except Exception as e:
-    return {'success': False, 'error': str(e)}
+@app.post("/model")
+async def classify(file: UploadFile = File(...)):
+    try:
+        start_model()
+        resultado = classify_image(file.file)
+
+        print("Resultado da classificação:", resultado)
+
+        return {
+            "success": True,
+            "prediction": resultado
+        }
+
+    except Exception as e:
+        print("Erro ao classificar imagem:", repr(e))
+        return {
+            "success": False,
+            "error": str(e)
+        }

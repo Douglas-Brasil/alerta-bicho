@@ -93,11 +93,12 @@
                     }
                }
 
+               
                async function sendImageToBackend(blob) {
                     msg.textContent = 'Analisando imagem...';
+                    resultContainer.classList.add('hidden');
 
                     const formData = new FormData();
-                    // 'file' precisa bater com o parâmetro da rota FastAPI: (file: UploadFile = File(...))
                     formData.append('file', blob, 'captura.png');
 
                     try {
@@ -106,25 +107,30 @@
                               body: formData
                          });
 
-                         if (!response.ok) {
-                              throw new Error(`Erro na requisição: ${response.statusText}`);
-                         }
-
                          const data = await response.json();
 
+                         console.log('Resposta do servidor:', data);
+
+                         if (!response.ok) {
+                              throw new Error(data.detail || data.error || `Erro HTTP ${response.status}`);
+                         }
+
                          if (data.success && data.prediction) {
-                              // Exibe a classificação retornada pelo servidor
                               resClass.textContent = data.prediction.class;
                               resConfidence.textContent = data.prediction.confidence;
                               resultContainer.classList.remove('hidden');
+
                               msg.textContent = 'Análise concluída!';
                          } else {
-                              msg.textContent = 'Erro no processamento: ' + (data.error || 'Erro desconhecido');
+                              msg.textContent = 'Erro no processamento: ' +
+                                   (data.error || 'Resposta sem classificação.');
                          }
                     } catch (err) {
-                         msg.textContent = 'Falha ao enviar a imagem para o servidor: ' + err.message;
+                         console.error('Erro ao enviar imagem:', err);
+                         msg.textContent = 'Falha na análise: ' + err.message;
                     }
                }
+
 
                function takePhoto() {
                     canvas.width = video.videoWidth;
