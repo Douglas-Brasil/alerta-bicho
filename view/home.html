@@ -19,6 +19,13 @@
 
                <p id="msg" role="status">Clique em “Abrir câmera” e permita o acesso quando o navegador pedir.</p>
 
+               <!-- Container para exibir o resultado da classificação -->
+               <div id="result-container" class="hidden" style="margin: 15px 0; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                    <h3>Resultado da Análise:</h3>
+                    <p><strong>Classe:</strong> <span id="res-class">-</span></p>
+                    <p><strong>Confiança:</strong> <span id="res-confidence">-</span>%</p>
+               </div>
+
                <div class="row">
                     <button id="start" class="primary">Abrir câmera</button>
                     <button id="snap" disabled>Tirar foto</button>
@@ -39,42 +46,83 @@
                const retakeBtn = document.getElementById('retake');
                const downloadLink = document.getElementById('download');
 
+               // Elementos do resultado
+               const resultContainer = document.getElementById('result-container');
+               const resClass = document.getElementById('res-class');
+               const resConfidence = document.getElementById('res-confidence');
+
                let stream = null;
                let facingMode = 'user'; // 'user' = frontal, 'environment' = traseira
 
                async function startCamera() {
                     stopCamera();
 
-                    try {
-                    stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                         facingMode,
-                         width: { ideal: 1280 },
-                         height: { ideal: 960 }
-                    },
-                    audio: false
-                    });
+                    // Esconde os resultados anteriores ao reiniciar a câmera
+                    resultContainer.classList.add('hidden');
 
-                    video.srcObject = stream;
-                    video.classList.remove('hidden');
-                    photo.classList.add('hidden');
-                    snapBtn.disabled = false;
-                    flipBtn.disabled = false;
-                    startBtn.classList.add('hidden');
-                    retakeBtn.classList.add('hidden');
-                    downloadLink.classList.add('hidden');
-                    msg.textContent = 'Câmera ativa. Clique em “Tirar foto”.';
+                    try {
+                         stream = await navigator.mediaDevices.getUserMedia({
+                              video: {
+                                   facingMode,
+                                   width: { ideal: 1280 },
+                                   height: { ideal: 960 }
+                              },
+                              audio: false
+                         });
+
+                         video.srcObject = stream;
+                         video.classList.remove('hidden');
+                         photo.classList.add('hidden');
+                         snapBtn.disabled = false;
+                         flipBtn.disabled = false;
+                         startBtn.classList.add('hidden');
+                         retakeBtn.classList.add('hidden');
+                         downloadLink.classList.add('hidden');
+                         msg.textContent = 'Câmera ativa. Clique em “Tirar foto”.';
                     } catch (err) {
-                    msg.textContent = err.name === 'NotAllowedError'
-                    ? 'Acesso negado. Permita o uso da câmera nas configurações do navegador.'
-                    : 'Não foi possível abrir a câmera: ' + err.message;
+                         msg.textContent = err.name === 'NotAllowedError'
+                         ? 'Acesso negado. Permita o uso da câmera nas configurações do navegador.'
+                         : 'Não foi possível abrir a câmera: ' + err.message;
                     }
                }
 
                function stopCamera() {
                     if (stream) {
-                    stream.getTracks().forEach(t => t.stop());
-                    stream = null;
+                         stream.getTracks().forEach(t => t.stop());
+                         stream = null;
+                    }
+               }
+
+               async function sendImageToBackend(blob) {
+                    msg.textContent = 'Analisando imagem...';
+
+                    const formData = new FormData();
+                    // 'file' precisa bater com o parâmetro da rota FastAPI: (file: UploadFile = File(...))
+                    formData.append('file', blob, 'captura.png');
+
+                    try {
+                         const response = await fetch('/model', {
+                              method: 'POST',
+                              body: formData
+                         });
+
+                         if (!response.ok) {
+                              throw new Error(`Erro na requisição: ${response.statusText}`);
+                         }
+
+                         const data = await response.json();
+
+                         if (data.success && data.prediction) {
+                              // Exibe a classificação retornada pelo servidor
+                              resClass.textContent = data.prediction.class;
+                              resConfidence.textContent = data.prediction.confidence;
+                              resultContainer.classList.remove('hidden');
+                              msg.textContent = 'Análise concluída!';
+                         } else {
+                              msg.textContent = 'Erro no processamento: ' + (data.error || 'Erro desconhecido');
+                         }
+                    } catch (err) {
+                         msg.textContent = 'Falha ao enviar a imagem para o servidor: ' + err.message;
                     }
                }
 
@@ -94,7 +142,15 @@
                     snapBtn.disabled = true;
                     flipBtn.disabled = true;
                     stopCamera();
-                    msg.textContent = 'Foto capturada!';
+
+                    // Converte o canvas diretamente para Blob para o envio do arquivo
+                    canvas.toBlob((blob) => {
+                         if (blob) {
+                              sendImageToBackend(blob);
+                         } else {
+                              msg.textContent = 'Erro ao gerar imagem para envio.';
+                         }
+                    }, 'image/png');
                }
 
                startBtn.addEventListener('click', startCamera);
