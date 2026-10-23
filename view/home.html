@@ -23,7 +23,16 @@
                <div id="result-container" class="hidden" style="margin: 15px 0; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
                     <h3>Resultado da Análise:</h3>
                     <p><strong>Nome Popular:</strong> <span id="res-class">-</span></p>
-                    <p><strong>Nome Científico:</strong> <span id="res-confidence">-</span>%</p>
+                    <p><strong>Nome Científico:</strong> <span id="res-cientific">-</span></p>
+                    <p><strong>Nivel de Perigo:</strong> <span id="res-danger-level">-</span></p>
+                    <p><strong>Tipo de Perigo:</strong> <span id="res-danger-type">-</span></p>
+                    <p><strong>Status de Extinção: </strong> <span id="res-extinction">-</span></p>
+                    <p><strong>Primeiros Socorros: </strong> <span id="res-first-aid">-</span></p>
+                    <p><strong>Tipo de Soro: </strong> <span id="res-type-saline-solution">-</span></p>
+                    <p><strong>Protegido por Lei?:</strong> <span id="res-legal-protection">-</span></p>
+                    <p><strong>Informações Legais: </strong> <span id="res-legal-info">-</span></p>
+                    
+                    
                </div>
 
                <div class="row">
@@ -49,7 +58,15 @@
                // Elementos do resultado
                const resultContainer = document.getElementById('result-container');
                const resClass = document.getElementById('res-class');
-               const resConfidence = document.getElementById('res-confidence');
+               const resCientific = document.getElementById('res-cientific');
+               const resDangerLevel = document.getElementById('res-danger-level');
+               const resDangerType = document.getElementById('res-danger-type');
+               const resExtinction = document.getElementById('res-extinction');
+               const resFirstAid = document.getElementById('res-first-aid');
+               const resTypeSalineSolution = document.getElementById('res-type-saline-solution');
+               const resLegalProtection = document.getElementById('res-legal-protection');
+               const resLegalInfo = document.getElementById('res-legal-info');
+               
 
                let stream = null;
                let facingMode = 'user'; // 'user' = frontal, 'environment' = traseira
@@ -117,7 +134,14 @@
 
                          if (data.success && data.prediction) {
                               resClass.textContent = data.prediction.nome_popular;
-                              resConfidence.textContent = data.prediction.nome_cientifico;
+                              resCientific.textContent = data.prediction.nome_cientifico;
+                              resDangerLevel.textContent = data.prediction.nivel_perigo;
+                              resDangerType.textContent = data.prediction.tipo_perigo;
+                              resExtinction.textContent = data.prediction.status_extincao;
+                              resFirstAid.textContent = data.prediction.primeiros_socorros;
+                              resTypeSalineSolution.textContent = data.prediction.tipo_soro;
+                              resLegalProtection.textContent = data.prediction.protegido_por_lei;
+                              resLegalInfo.textContent = data.prediction.info_legal;
                               resultContainer.classList.remove('hidden');
 
                               msg.textContent = 'Análise concluída!';
@@ -171,4 +195,3 @@
      </body>
 </html>
 
-confiança
