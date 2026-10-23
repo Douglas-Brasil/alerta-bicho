@@ -16,7 +16,18 @@ Após a instalação, feche e abra o terminal novamente e verifique se o uv foi 
 uv --version
 ```
 
-## 2. Executando o projeto
+## 2. Sincronização do UV
+
+Com o uv instalado, abra o terminal na pasta raiz do projeto e execute:
+
+```
+uv sync
+```
+
+Esse comando sincroniza o ambiente de desenvolvimento de acordo com os arquivos 'pyproject.toml' e 'uv.lock'.
+Isso significa que todas as dependências serão baixadas (bibliotecas), até mesmo pode atualizar a versão do Python se necessário.
+
+## 3. Executando o projeto
 
 Com o uv instalado, abra o terminal na pasta raiz do projeto e execute:
 
