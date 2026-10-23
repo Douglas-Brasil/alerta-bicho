@@ -22,8 +22,8 @@
                <!-- Container para exibir o resultado da classificação -->
                <div id="result-container" class="hidden" style="margin: 15px 0; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
                     <h3>Resultado da Análise:</h3>
-                    <p><strong>Classe:</strong> <span id="res-class">-</span></p>
-                    <p><strong>Confiança:</strong> <span id="res-confidence">-</span>%</p>
+                    <p><strong>Nome Popular:</strong> <span id="res-class">-</span></p>
+                    <p><strong>Nome Científico:</strong> <span id="res-confidence">-</span>%</p>
                </div>
 
                <div class="row">
@@ -116,8 +116,8 @@
                          }
 
                          if (data.success && data.prediction) {
-                              resClass.textContent = data.prediction.class;
-                              resConfidence.textContent = data.prediction.confidence;
+                              resClass.textContent = data.prediction.nome_popular;
+                              resConfidence.textContent = data.prediction.nome_cientifico;
                               resultContainer.classList.remove('hidden');
 
                               msg.textContent = 'Análise concluída!';
@@ -170,3 +170,5 @@
           </script>
      </body>
 </html>
+
+confiança

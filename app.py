@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from model import start_model, classify_image
+from database.connection import get_animal_by_id
 
 app = FastAPI()
 
@@ -29,9 +30,11 @@ async def classify(file: UploadFile = File(...)):
 
         print("Resultado da classificação:", resultado)
 
+        animal = get_animal_by_id(int(resultado["class"]))
+
         return {
             "success": True,
-            "prediction": resultado
+            "prediction": animal
         }
 
     except Exception as e:

@@ -12,6 +12,7 @@ dependencies = [
     "fastapi[standard]>=0.161.1",
     "numpy>=2.5.4",
     "pillow>=13.0.0",
+    "supabase>=2.33.0",
 ]
 
 [project.scripts]
