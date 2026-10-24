@@ -26,6 +26,8 @@ def home(is_authenticated: bool = Depends(verify_authentication)):
 @router.get("/login")
 def login(is_authenticated: bool = Depends(verify_authentication)):
     print(f"\033[44m [REQUEST] Rota Login chamada. Autenticado? {is_authenticated} \033[0m")
+    if is_authenticated:
+        return RedirectResponse(url="/", status_code=303)
 
     return get_login_page()
 

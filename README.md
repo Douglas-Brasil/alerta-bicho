@@ -37,17 +37,6 @@ uv run fastapi dev
 
 O comando inicia o servidor de desenvolvimento do FastAPI. Após a inicialização, o terminal exibirá o endereço local para acessar a aplicação pelo navegador.
 
-## 📁 Arquitetura do Projeto
-
-```
-projeto/
-│
-├── app.py
-│
-└── view/
-    ├── home.html
-    └── style.css
-```
 
 ### Principais arquivos
 
