@@ -47,8 +47,12 @@ def logout():
     print("\033[41m ROTA DE DESLOGAR \033[0m")
     return logout_user()
 
-
 @router.post("/model")
-def classify(file: UploadFile = File(...)):
+def model(file: UploadFile = File(...), is_authenticated: bool = Depends(verify_authentication)):
     print("\033[41m ROTA DE ENVIAR IMAGEM PRA IA \033[0m")
-    return classify(file)
+
+    if is_authenticated:
+        return classify(file)
+    return RedirectResponse(url="/login", status_code=303)
+
+    

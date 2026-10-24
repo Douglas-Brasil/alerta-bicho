@@ -7,7 +7,7 @@ from fastapi import FastAPI, File, UploadFile
 from src.models.AI import get_animal_by_id
 
 # Diretório onde este arquivo está localizado
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Variáveis globais
 model = None
@@ -16,7 +16,7 @@ input_details = None
 output_details = None
 
 
-async def classify(file: UploadFile = File(...)):
+def classify(file: UploadFile = File(...)):
     try:
         start_model()
         resultado = classify_image(file.file)
@@ -42,8 +42,8 @@ def start_model():
     global model, class_names, input_details, output_details
 
     if model is None:
-        model_path = BASE_DIR / "model" / "model_unquant.tflite"
-        labels_path = BASE_DIR / "model" / "labels.txt"
+        model_path = BASE_DIR / "AI" / "model_unquant.tflite"
+        labels_path = BASE_DIR / "AI" / "labels.txt"
 
         print(f"Carregando modelo de: {model_path}")
 
