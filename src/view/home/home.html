@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+     <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>Câmera</title>
+          <link rel="stylesheet" href="/static/home/style.css">
+     </head>
+     <body>
+          <main>
+               <h1>Tirar uma foto</h1>
+
+               <div class="stage">
+                    <video id="video" autoplay playsinline muted></video>
+                    <img id="photo" class="hidden" alt="Foto capturada">
+               </div>
+
+               <canvas id="canvas" class="hidden"></canvas>
+
+               <p id="msg" role="status">Clique em “Abrir câmera” e permita o acesso quando o navegador pedir.</p>
+
+               <!-- Container para exibir o resultado da classificação -->
+               <div id="result-container" class="hidden" style="margin: 15px 0; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                    <h3>Resultado da Análise:</h3>
+                    <p><strong>Nome Popular:</strong> <span id="res-class">-</span></p>
+                    <p><strong>Nome Científico:</strong> <span id="res-cientific">-</span></p>
+                    <p><strong>Nivel de Perigo:</strong> <span id="res-danger-level">-</span></p>
+                    <p><strong>Tipo de Perigo:</strong> <span id="res-danger-type">-</span></p>
+                    <p><strong>Status de Extinção: </strong> <span id="res-extinction">-</span></p>
+                    <p><strong>Primeiros Socorros: </strong> <span id="res-first-aid">-</span></p>
+                    <p><strong>Tipo de Soro: </strong> <span id="res-type-saline-solution">-</span></p>
+                    <p><strong>Protegido por Lei?:</strong> <span id="res-legal-protection">-</span></p>
+                    <p><strong>Informações Legais: </strong> <span id="res-legal-info">-</span></p>
+                    
+                    
+               </div>
+
+               <div class="row">
+                    <button id="start" class="primary">Abrir câmera</button>
+                    <button id="snap" disabled>Tirar foto</button>
+                    <button id="flip" disabled>Trocar câmera</button>
+                    <button id="retake" class="hidden">Tirar outra</button>
+                    <a id="download" class="btn hidden" download="foto.png">Baixar foto</a>
+               </div>
+          </main>
+
+          <script>
+               const video = document.getElementById('video');
+               const photo = document.getElementById('photo');
+               const canvas = document.getElementById('canvas');
+               const msg = document.getElementById('msg');
+               const startBtn = document.getElementById('start');
+               const snapBtn = document.getElementById('snap');
+               const flipBtn = document.getElementById('flip');
+               const retakeBtn = document.getElementById('retake');
+               const downloadLink = document.getElementById('download');
+
+               // Elementos do resultado
+               const resultContainer = document.getElementById('result-container');
+               const resClass = document.getElementById('res-class');
+               const resCientific = document.getElementById('res-cientific');
+               const resDangerLevel = document.getElementById('res-danger-level');
+               const resDangerType = document.getElementById('res-danger-type');
+               const resExtinction = document.getElementById('res-extinction');
+               const resFirstAid = document.getElementById('res-first-aid');
+               const resTypeSalineSolution = document.getElementById('res-type-saline-solution');
+               const resLegalProtection = document.getElementById('res-legal-protection');
+               const resLegalInfo = document.getElementById('res-legal-info');
+               
+
+               let stream = null;
+               let facingMode = 'user'; // 'user' = frontal, 'environment' = traseira
+
+               async function startCamera() {
+                    stopCamera();
+
+                    // Esconde os resultados anteriores ao reiniciar a câmera
+                    resultContainer.classList.add('hidden');
+
+                    try {
+                         stream = await navigator.mediaDevices.getUserMedia({
+                              video: {
+                                   facingMode,
+                                   width: { ideal: 1280 },
+                                   height: { ideal: 960 }
+                              },
+                              audio: false
+                         });
+
+                         video.srcObject = stream;
+                         video.classList.remove('hidden');
+                         photo.classList.add('hidden');
+                         snapBtn.disabled = false;
+                         flipBtn.disabled = false;
+                         startBtn.classList.add('hidden');
+                         retakeBtn.classList.add('hidden');
+                         downloadLink.classList.add('hidden');
+                         msg.textContent = 'Câmera ativa. Clique em “Tirar foto”.';
+                    } catch (err) {
+                         msg.textContent = err.name === 'NotAllowedError'
+                         ? 'Acesso negado. Permita o uso da câmera nas configurações do navegador.'
+                         : 'Não foi possível abrir a câmera: ' + err.message;
+                    }
+               }
+
+               function stopCamera() {
+                    if (stream) {
+                         stream.getTracks().forEach(t => t.stop());
+                         stream = null;
+                    }
+               }
+
+               
+               async function sendImageToBackend(blob) {
+                    msg.textContent = 'Analisando imagem...';
+                    resultContainer.classList.add('hidden');
+
+                    const formData = new FormData();
+                    formData.append('file', blob, 'captura.png');
+
+                    try {
+                         const response = await fetch('/model', {
+                              method: 'POST',
+                              body: formData
+                         });
+
+                         const data = await response.json();
+
+                         console.log('Resposta do servidor:', data);
+
+                         if (!response.ok) {
+                              throw new Error(data.detail || data.error || `Erro HTTP ${response.status}`);
+                         }
+
+                         if (data.success && data.prediction) {
+                              resClass.textContent = data.prediction.nome_popular;
+                              resCientific.textContent = data.prediction.nome_cientifico;
+                              resDangerLevel.textContent = data.prediction.nivel_perigo;
+                              resDangerType.textContent = data.prediction.tipo_perigo;
+                              resExtinction.textContent = data.prediction.status_extincao;
+                              resFirstAid.textContent = data.prediction.primeiros_socorros;
+                              resTypeSalineSolution.textContent = data.prediction.tipo_soro;
+                              resLegalProtection.textContent = data.prediction.protegido_por_lei;
+                              resLegalInfo.textContent = data.prediction.info_legal;
+                              resultContainer.classList.remove('hidden');
+
+                              msg.textContent = 'Análise concluída!';
+                         } else {
+                              msg.textContent = 'Erro no processamento: ' +
+                                   (data.error || 'Resposta sem classificação.');
+                         }
+                    } catch (err) {
+                         console.error('Erro ao enviar imagem:', err);
+                         msg.textContent = 'Falha na análise: ' + err.message;
+                    }
+               }
+
+
+               function takePhoto() {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    const dataUrl = canvas.toDataURL('image/png');
+                    photo.src = dataUrl;
+                    downloadLink.href = dataUrl;
+
+                    video.classList.add('hidden');
+                    photo.classList.remove('hidden');
+                    downloadLink.classList.remove('hidden');
+                    retakeBtn.classList.remove('hidden');
+                    snapBtn.disabled = true;
+                    flipBtn.disabled = true;
+                    stopCamera();
+
+                    // Converte o canvas diretamente para Blob para o envio do arquivo
+                    canvas.toBlob((blob) => {
+                         if (blob) {
+                              sendImageToBackend(blob);
+                         } else {
+                              msg.textContent = 'Erro ao gerar imagem para envio.';
+                         }
+                    }, 'image/png');
+               }
+
+               startBtn.addEventListener('click', startCamera);
+               retakeBtn.addEventListener('click', startCamera);
+               snapBtn.addEventListener('click', takePhoto);
+
+               flipBtn.addEventListener('click', () => {
+                    facingMode = facingMode === 'user' ? 'environment' : 'user';
+                    startCamera();
+               });
+          </script>
+     </body>
+</html>
+
