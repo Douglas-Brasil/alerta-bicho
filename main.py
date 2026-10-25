@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="src/view"), name="static")
+app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
 app.include_router(router)
 

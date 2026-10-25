@@ -1,4 +1,5 @@
 from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 
 from fastapi import HTTPException
 from src.models.user import User
@@ -7,7 +8,8 @@ from src.models.login import Login
 
 def get_login_page():
     print(f"\033[44m CARREGANDO PAGINA DE LOGIN[0m")
-    return FileResponse("src/view/login/login.html")
+    templates = Jinja2Templates(directory="src/view")
+    return templates.TemplateResponse("login.html")
 
 def register_user(email: str, password: str) -> RedirectResponse:
     new_user = User(email=email, password=password)

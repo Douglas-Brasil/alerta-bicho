@@ -4,6 +4,8 @@ from src.controllers.home_controller import get_home_page
 from src.controllers.login_controller import get_login_page, register_user, login_user, logout_user
 from src.controllers.auth_controller import Controller_Auth
 from src.controllers.AI_controller import classify
+from fastapi.templating import Jinja2Templates
+
 
 
 
@@ -11,6 +13,7 @@ print("\033[42m [BOOT] Arquivo de rotas carregado na memória \033[0m")
 
 router = APIRouter()
 auth_controller = Controller_Auth()
+templates = Jinja2Templates(directory="src/view")
 
 def verify_authentication(request: Request) -> bool:
     print("\033[41m [REQUEST] Entrou na verificação de autenticação \033[0m")
@@ -24,12 +27,15 @@ def home(is_authenticated: bool = Depends(verify_authentication)):
     return RedirectResponse(url="/login", status_code=303)
 
 @router.get("/login")
-def login(is_authenticated: bool = Depends(verify_authentication)):
+def login(request: Request, is_authenticated: bool = Depends(verify_authentication)):
     print(f"\033[44m [REQUEST] Rota Login chamada. Autenticado? {is_authenticated} \033[0m")
     if is_authenticated:
         return RedirectResponse(url="/", status_code=303)
-
-    return get_login_page()
+    
+    return templates.TemplateResponse(
+        request=request, 
+        name="login.html"
+    )
 
 
 @router.post("/register/user")
