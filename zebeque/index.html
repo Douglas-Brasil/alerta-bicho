@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site - Autenticação & Câmera</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Camadas de Fundo Animadas com Imagens Locais (Biomas) -->
+  <div class="bg-slider">
+    <div class="bg-layer amazonia"></div>
+    <div class="bg-layer fauna"></div>
+    <div class="bg-layer caatinga"></div>
+  </div>
+
+  <div class="view-container">
+
+    <!-- TELA 1: AUTENTICAÇÃO -->
+    <main id="auth-screen" class="auth">
+      <h1 id="titulo">Entrar</h1>
+      <p class="sub" id="sub">Acesse sua conta para continuar.</p>
+
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" id="tab-login" aria-selected="true">Entrar</button>
+        <button type="button" role="tab" id="tab-cadastro" aria-selected="false">Criar conta</button>
+      </div>
+
+      <!-- FORM LOGIN -->
+      <form id="form-login">
+        <label for="l-email">E-mail</label>
+        <input id="l-email" type="email" autocomplete="email" placeholder="voce@exemplo.com" required>
+        
+        <label for="l-senha">Senha</label>
+        <div class="pw">
+          <input id="l-senha" type="password" autocomplete="current-password" placeholder="Sua senha" required>
+          <button type="button" class="ver" aria-pressed="false">Mostrar</button>
+        </div>
+
+        <div class="row-auth">
+          <label><input type="checkbox"> Lembrar de mim</label>
+          <a href="#recuperar">Esqueci a senha</a>
+        </div>
+
+        <button class="go" type="submit">Entrar no Sistema</button>
+      </form>
+
+      <!-- FORM CADASTRO -->
+      <form id="form-cadastro" hidden>
+        <label for="c-nome">Nome</label>
+        <input id="c-nome" type="text" autocomplete="name" placeholder="Seu nome" required>
+
+        <label for="c-email">E-mail</label>
+        <input id="c-email" type="email" autocomplete="email" placeholder="voce@exemplo.com" required>
+
+        <label for="c-senha">Senha</label>
+        <div class="pw">
+          <input id="c-senha" type="password" autocomplete="new-password" placeholder="Mínimo de 6 caracteres" required>
+          <button type="button" class="ver" aria-pressed="false">Mostrar</button>
+        </div>
+
+        <button class="go" type="submit">Criar Conta</button>
+      </form>
+    </main>
+
+    <!-- TELA 2: CÂMERA E ANÁLISE DE FAUNA -->
+    <div id="app-screen" class="hidden">
+      <div class="app-header">
+        <h1>Tirar uma foto</h1>
+        <button id="logout-btn" class="btn-logout">Deslogar</button>
+      </div>
+
+      <div class="stage">
+        <video id="video" autoplay playsinline muted></video>
+        <img id="photo" class="hidden" alt="Foto capturada">
+      </div>
+
+      <canvas id="canvas" class="hidden"></canvas>
+
+      <p id="msg" role="status">Clique em “Abrir câmera” e permita o acesso quando o navegador pedir.</p>
+
+      <!-- Container do Resultado da Análise -->
+      <div id="result-container" class="hidden">
+        <h3>Resultado da Análise:</h3>
+        <p><strong>Nome Popular:</strong> <span id="res-class">-</span></p>
+        <p><strong>Nome Científico:</strong> <span id="res-cientific">-</span></p>
+        <p><strong>Nível de Perigo:</strong> <span id="res-danger-level">-</span></p>
+        <p><strong>Tipo de Perigo:</strong> <span id="res-danger-type">-</span></p>
+        <p><strong>Status de Extinção:</strong> <span id="res-extinction">-</span></p>
+        <p><strong>Primeiros Socorros:</strong> <span id="res-first-aid">-</span></p>
+        <p><strong>Tipo de Soro:</strong> <span id="res-type-saline-solution">-</span></p>
+        <p><strong>Protegido por Lei?:</strong> <span id="res-legal-protection">-</span></p>
+        <p><strong>Informações Legais:</strong> <span id="res-legal-info">-</span></p>
+      </div>
+
+      <div class="row">
+        <button id="start" class="primary">Abrir câmera</button>
+        <button id="snap" disabled>Tirar foto</button>
+        <button id="flip" disabled>Trocar câmera</button>
+        <button id="retake" class="hidden">Tirar outra</button>
+        <a id="download" class="btn hidden" download="foto.png">Baixar foto</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
