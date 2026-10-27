@@ -32,10 +32,9 @@ def register_user(name: str, email: str, password: str) -> RedirectResponse:
     return response
 
 
-def login_user(email: str, password: str) -> RedirectResponse:
-    # 1. Tenta autenticar o usuário no Supabase
+def login_user(email: str, password: str):
     user = User(email=email, password=password)
-    result = Login.authenticate(user)  # Ajuste o método conforme sua classe Login
+    result = Login.authenticate(user)
 
     if not result.get("success"):
         return JSONResponse(
@@ -46,21 +45,28 @@ def login_user(email: str, password: str) -> RedirectResponse:
             }
         )
 
-    # 2. Cria a resposta de redirecionamento
-    response = RedirectResponse(url="/", status_code=303)
-    print("\033[41m LOGOU O USUARIO \033[0m")
-    # 3. Define o cookie de acesso na resposta de redirecionamento
     access_token = result.get("session").access_token
+
+    response = JSONResponse(
+        content={
+            "success": True,
+            "redirect": "/"
+        }
+    )
+
     response.set_cookie(
         key="access_token",
         value=access_token,
         httponly=True,
         max_age=3600,
         samesite="lax",
-        secure=True  # Recomendado em produção com HTTPS
+        secure=True  # Use False somente em desenvolvimento HTTP local
     )
 
+    print("\033[41m LOGOU O USUARIO \033[0m")
+
     return response
+
 
 
 def logout_user() -> RedirectResponse:
