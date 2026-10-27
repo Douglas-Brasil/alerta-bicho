@@ -6,13 +6,8 @@ from src.models.user import User
 from src.models.login import Login
 
 
-def get_login_page():
-    print(f"\033[44m CARREGANDO PAGINA DE LOGIN[0m")
-    templates = Jinja2Templates(directory="src/view")
-    return templates.TemplateResponse("login.html")
-
-def register_user(email: str, password: str) -> RedirectResponse:
-    new_user = User(email=email, password=password)
+def register_user(name: str, email: str, password: str) -> RedirectResponse:
+    new_user = User(name=name, email=email, password=password)
     result = Login.register(new_user)
 
     if not result.get("success"):

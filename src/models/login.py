@@ -5,14 +5,21 @@ from .connection_database import supabase  # Certifique-se de que a instância d
 class Login:
      @staticmethod
      def register(user: User) -> dict:
+          
+          
           try:
                response = supabase.auth.sign_up({
                     "email": user.get_email(),
-                    "password": user.get_password()
+                    "password": user.get_password(),
+                    "options": {
+                         "data": {
+                              "name": user.get_name()  # Ajuste o método conforme o nome no seu objeto User (ex: get_name ou name)
+                         }
+                    }
                })
 
                if response.user:
-                    print(f"\033[44m CRIOU USER \033[0m")
+                    print(f"\033[44m CRIOU USER NOME: {user.get_name()} \033[0m")
                     
                     return {
                     "success": True,

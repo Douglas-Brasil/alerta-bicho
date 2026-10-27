@@ -47,14 +47,14 @@
     <!-- CADASTRO -->
     <form id="form-cadastro" novalidate hidden method="POST" action="/register/user">
       <label for="c-nome">Nome</label>
-      <input id="c-nome" type="text" autocomplete="name" placeholder="Seu nome">
+      <input id="c-nome" type="text" autocomplete="name" placeholder="Seu nome" name="name">
 
       <label for="c-email">E-mail</label>
-      <input id="c-email" type="email" autocomplete="email" placeholder="voce@exemplo.com">
+      <input id="c-email" type="email" autocomplete="email" placeholder="voce@exemplo.com" name="email">
 
       <label for="c-senha">Senha</label>
       <div class="pw">
-        <input id="c-senha" type="password" autocomplete="new-password" placeholder="Mínimo de 6 caracteres">
+        <input id="c-senha" type="password" autocomplete="new-password" placeholder="Mínimo de 6 caracteres" name="password">
         <button type="button" class="ver" aria-pressed="false">Mostrar</button>
       </div>
 
