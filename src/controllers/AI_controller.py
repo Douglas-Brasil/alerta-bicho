@@ -10,6 +10,9 @@ from src.models.AI import get_animal_by_id
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Variáveis globais
+# Confiança mínima (%) para aceitar a classificação
+MIN_CONFIDENCE = 85
+
 model = None
 class_names = []
 input_details = None
@@ -22,6 +25,15 @@ def classify(file: UploadFile = File(...)):
         resultado = classify_image(file.file)
 
         print("Resultado da classificação:", resultado)
+
+        if resultado["confidence"] < MIN_CONFIDENCE:
+            return {
+                "success": False,
+                "low_confidence": True,
+                "confidence": resultado["confidence"],
+                "error": "Não consegui identificar o animal com segurança. "
+                         "Tente outra foto, com boa luz e o animal bem visível."
+            }
 
         animal = get_animal_by_id(int(resultado["class"]))
 
