@@ -92,6 +92,9 @@
         
         if (resultContainer) resultContainer.classList.remove('hidden');
         if (msg) msg.textContent = 'Análise concluída!';
+      } else if (data.low_confidence) {
+        if (resultContainer) resultContainer.classList.add('hidden');
+        if (msg) msg.textContent = data.error;
       } else {
         if (msg) msg.textContent = 'Erro no processamento: ' + (data.error || 'Resposta sem classificação.');
       }
