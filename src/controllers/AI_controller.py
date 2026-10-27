@@ -11,7 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Variáveis globais
 # Confiança mínima (%) para aceitar a classificação
-MIN_CONFIDENCE = 85
+MIN_CONFIDENCE = 90
+# Diferença mínima (pontos %) entre a 1ª e a 2ª classe mais prováveis
+MIN_MARGIN = 30
 
 model = None
 class_names = []
@@ -26,7 +28,8 @@ def classify(file: UploadFile = File(...)):
 
         print("Resultado da classificação:", resultado)
 
-        if resultado["confidence"] < MIN_CONFIDENCE:
+        if (resultado["confidence"] < MIN_CONFIDENCE
+                or resultado["margin"] < MIN_MARGIN):
             return {
                 "success": False,
                 "low_confidence": True,
@@ -120,9 +123,11 @@ def classify_image(image_file):
     index = int(np.argmax(prediction))
     class_name = class_names[index]
     confidence_score = float(prediction[index])
+    second_score = float(np.partition(prediction, -2)[-2])
 
     return {
         "class": class_name,
-        "confidence": round(confidence_score * 100, 2)
+        "confidence": round(confidence_score * 100, 2),
+        "margin": round((confidence_score - second_score) * 100, 2)
     }
 
