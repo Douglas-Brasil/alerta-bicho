@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recicla.IA - Captura de Fauna</title>
+  <link rel="stylesheet" href="/static/css/home.css">
+</head>
+<body>
+
+  <div class="bg-slider">
+    <div class="bg-layer amazonia"></div>
+    <div class="bg-layer fauna"></div>
+    <div class="bg-layer caatinga"></div>
+  </div>
+
+  <div class="view-container">
+    <div id="app-screen" class="app-box">
+      <div class="app-header">
+        <h1>Tirar uma foto</h1>
+        <form action="/login/logout" method="POST">
+          <button type="submit" id="logout-btn" class="btn-logout" >Deslogar</button>
+        </form>
+        
+      </div>
+
+      <div class="stage">
+        <video id="video" autoplay playsinline muted></video>
+        <img id="photo" class="hidden" alt="Foto capturada">
+      </div>
+
+      <canvas id="canvas" class="hidden"></canvas>
+
+      <p id="msg" role="status">Clique em “Abrir câmera” e permita o acesso quando o navegador pedir.</p>
+
+      <div id="result-container" class="hidden">
+        <h3>Resultado da Análise:</h3>
+        <p><strong>Nome Popular:</strong> <span id="res-class">-</span></p>
+        <p><strong>Nome Científico:</strong> <span id="res-cientific">-</span></p>
+        <p><strong>Nível de Perigo:</strong> <span id="res-danger-level">-</span></p>
+        <p><strong>Tipo de Perigo:</strong> <span id="res-danger-type">-</span></p>
+        <p><strong>Status de Extinção:</strong> <span id="res-extinction">-</span></p>
+        <p><strong>Primeiros Socorros:</strong> <span id="res-first-aid">-</span></p>
+        <p><strong>Tipo de Soro:</strong> <span id="res-type-saline-solution">-</span></p>
+        <p><strong>Protegido por Lei?:</strong> <span id="res-legal-protection">-</span></p>
+        <p><strong>Informações Legais:</strong> <span id="res-legal-info">-</span></p>
+      </div>
+
+      <div class="row">
+        <button id="start" class="primary">Abrir câmera</button>
+        <button id="snap" disabled>Tirar foto</button>
+        <button id="flip" disabled>Trocar câmera</button>
+        <button id="retake" class="hidden">Tirar outra</button>
+        <a id="download" class="btn hidden" download="foto.png">Baixar foto</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/home.js"></script>
+</body>
+</html>
