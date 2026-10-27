@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,56 +15,58 @@
     <div class="bg-layer caatinga"></div>
   </div>
 
-  <main class="auth">
-    <h1 id="titulo">Entrar</h1>
-    <p class="sub" id="sub">Acesse sua conta para continuar.</p>
+  <div class="view-container">
+    <main class="auth">
+      <h1 id="titulo">Entrar</h1>
+      <p class="sub" id="sub">Acesse sua conta para continuar.</p>
 
-    <div class="tabs" role="tablist">
-      <button type="button" role="tab" id="tab-login" aria-selected="true">Entrar</button>
-      <button type="button" role="tab" id="tab-cadastro" aria-selected="false">Criar conta</button>
-    </div>
-
-    <!-- LOGIN -->
-    <form id="form-login" method="POST" action="/login">
-      <label for="l-email">E-mail</label>
-      <input id="l-email" type="email" autocomplete="email" placeholder="voce@exemplo.com" name="email">
-      
-      <label for="l-senha">Senha</label>
-      <div class="pw">
-        <input id="l-senha" type="password" autocomplete="current-password" placeholder="Sua senha" name="password">
-        <button type="button" class="ver" aria-pressed="false">Mostrar</button>
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" id="tab-login" aria-selected="true">Entrar</button>
+        <button type="button" role="tab" id="tab-cadastro" aria-selected="false">Criar conta</button>
       </div>
 
-      <div class="row">
-        <label><input type="checkbox"> Lembrar de mim</label>
-        <a href="#recuperar">Esqueci a senha</a>
-      </div>
+      <!-- LOGIN -->
+      <form id="form-login" method="POST" action="/login">
+        <label for="l-email">E-mail</label>
+        <input id="l-email" type="email" autocomplete="email" placeholder="voce@exemplo.com" name="email">
 
-      <button class="go" type="submit">Entrar</button>
-      <p class="msg" role="alert"></p>
-    </form>
+        <label for="l-senha">Senha</label>
+        <div class="pw">
+          <input id="l-senha" type="password" autocomplete="current-password" placeholder="Sua senha" name="password">
+          <button type="button" class="ver" aria-pressed="false">Mostrar</button>
+        </div>
 
-    <!-- CADASTRO -->
-    <form id="form-cadastro" novalidate hidden method="POST" action="/register/user">
-      <label for="c-nome">Nome</label>
-      <input id="c-nome" type="text" autocomplete="name" placeholder="Seu nome" name="name">
+        <div class="row-auth">
+          <label><input type="checkbox"> Lembrar de mim</label>
+          <a href="#recuperar">Esqueci a senha</a>
+        </div>
 
-      <label for="c-email">E-mail</label>
-      <input id="c-email" type="email" autocomplete="email" placeholder="voce@exemplo.com" name="email">
+        <button class="go" type="submit">Entrar</button>
+        <p class="msg" id="login-msg" role="alert" hidden></p>
+      </form>
 
-      <label for="c-senha">Senha</label>
-      <div class="pw">
-        <input id="c-senha" type="password" autocomplete="new-password" placeholder="Mínimo de 6 caracteres" name="password">
-        <button type="button" class="ver" aria-pressed="false">Mostrar</button>
-      </div>
+      <!-- CADASTRO -->
+      <form id="form-cadastro" novalidate hidden method="POST" action="/register/user">
+        <label for="c-nome">Nome</label>
+        <input id="c-nome" type="text" autocomplete="name" placeholder="Seu nome" name="name">
 
-      <label for="c-senha2">Confirmar senha</label>
-      <input id="c-senha2" type="password" autocomplete="new-password" placeholder="Repita a senha">
+        <label for="c-email">E-mail</label>
+        <input id="c-email" type="email" autocomplete="email" placeholder="voce@exemplo.com" name="email">
 
-      <button class="go" type="submit">Criar conta</button>
-      <p class="msg" role="alert"></p>
-    </form>
-  </main>
+        <label for="c-senha">Senha</label>
+        <div class="pw">
+          <input id="c-senha" type="password" autocomplete="new-password" placeholder="Mínimo de 6 caracteres" name="password">
+          <button type="button" class="ver" aria-pressed="false">Mostrar</button>
+        </div>
+
+        <label for="c-senha2">Confirmar senha</label>
+        <input id="c-senha2" type="password" autocomplete="new-password" placeholder="Repita a senha">
+
+        <button class="go" type="submit">Criar conta</button>
+        <p class="msg" role="alert"></p>
+      </form>
+    </main>
+  </div>
 
   <script src="/static/js/login.js"></script>
 </body>

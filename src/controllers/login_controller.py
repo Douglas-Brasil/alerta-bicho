@@ -1,4 +1,4 @@
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from fastapi import HTTPException
@@ -38,9 +38,12 @@ def login_user(email: str, password: str) -> RedirectResponse:
     result = Login.authenticate(user)  # Ajuste o método conforme sua classe Login
 
     if not result.get("success"):
-        raise HTTPException(
-            status_code=400, 
-            detail=result.get("error", "Credenciais inválidas.")
+        return JSONResponse(
+            status_code=401,
+            content={
+                "success": False,
+                "message": "E-mail ou senha incorretos. Tente novamente."
+            }
         )
 
     # 2. Cria a resposta de redirecionamento

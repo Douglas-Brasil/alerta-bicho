@@ -50,17 +50,17 @@ body {
 }
 
 .bg-layer.amazonia {
-  background-image: linear-gradient(rgba(7, 21, 14, 0.75), rgba(7, 21, 14, 0.75)), url('imagens/amazonia.jpg');
+  background-image: linear-gradient(rgba(7, 21, 14, 0.75), rgba(7, 21, 14, 0.75)), url('/static/images/amazonia.jpg');
   animation-delay: 0s;
 }
 
 .bg-layer.fauna {
-  background-image: linear-gradient(rgba(7, 21, 14, 0.75), rgba(7, 21, 14, 0.75)), url('imagens/fauna.jpg');
+  background-image: linear-gradient(rgba(7, 21, 14, 0.75), rgba(7, 21, 14, 0.75)), url('/static/images/fauna.jpg');
   animation-delay: 8s;
 }
 
 .bg-layer.caatinga {
-  background-image: linear-gradient(rgba(7, 21, 14, 0.75), rgba(7, 21, 14, 0.75)), url('imagens/caatinga.jpg');
+  background-image: linear-gradient(rgba(7, 21, 14, 0.75), rgba(7, 21, 14, 0.75)), url('/static/images/caatinga.jpg');
   animation-delay: 16s;
 }
 
